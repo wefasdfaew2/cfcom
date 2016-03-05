@@ -115,6 +115,7 @@ namespace App
             LoadGetAccount();
             LoadBetAccount();
             LoadMatchSettings();
+            lblMess.SelectedIndex = -1;
         }
 
         private void addCol(string colCap, int colWidth, int pos, Color? color)
@@ -442,6 +443,7 @@ namespace App
 
         private void btnAddBuy_Click(object sender, EventArgs e)
         {
+            // ashgajhs
             var account = new Account()
             {
                 Key = Guid.NewGuid().ToString(),
@@ -624,17 +626,12 @@ namespace App
         SemaphoreSlim _mutex = new SemaphoreSlim(10);
         private void button1_Click_1(object sender, EventArgs e)
         {
-            Program.Accounts.Where(x=>x.Cookie>0 && )
-            var acc = Program.Accounts.SingleOrDefault(x => x.Key == _account.Key);
-            if (acc != null && acc.Cookie.Count > 0 && !string.IsNullOrEmpty(acc.LoginName))
-            {
-                var odd = acc.CurrentMatch;
-                _flag = false;
-                Task<Response<bool>> loginTask = Task.Run(() => new Sbobet().BetOverUnder(acc, odd));
-                var result = await loginTask;
-                acc.LastBetId = odd.MatchId.ToString() + odd.OddType.ToString() + odd.Goal.ToString();
-                if (result.Data && !result.HasError) lbl_BetSuccess.Invoke(new Action(() => lbl_BetSuccess.Text = ConvertUtils.ToMoneyText(acc.StakeVnd)));
-            }
+
+            _log.Info(System.Diagnostics.Process.GetCurrentProcess().Threads.Count);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
 
         }
 

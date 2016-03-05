@@ -38,7 +38,9 @@ namespace App
             XmlConfigurator.Configure();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            ServicePointManager.DefaultConnectionLimit = 500;
             ServicePointManager.Expect100Continue = false;
+            ServicePointManager.MaxServicePoints = 500;
             var frmMain = new frmMain();
             ((log4net.Repository.Hierarchy.Hierarchy)log4net.LogManager.GetLoggerRepository()).Root.AddAppender(frmMain);
             Application.Run(frmMain);
@@ -145,54 +147,6 @@ namespace App
             }
             Properties.Settings.Default.Accounts = JsonConvert.SerializeObject(accs);
             Properties.Settings.Default.Save();
-        }
-        static void TestGet()
-        {
-            var result = new Sbobet().Login(acc);
-            if (result.Data)
-            {
-                var oddResult = new Sbobet().GetRunningOdds(acc);
-            }
-        }
-        static void TestBet()
-        {
-            var result = new Sbobet().Login(acc);
-            if (result.Data)
-            {
-                var oddResult = new Sbobet().GetRunningOdds(acc);
-                if (!oddResult.HasError && oddResult.Data.Count > 0)
-                {
-                    var odd = oddResult.Data[0];
-                    SbobetTicket ticket = new SbobetTicket();
-                    //Home:id=30292694&op=h&odds=-0.91&hdpType=1&isor=0&isLive=0&betpage=18&style=1
-                    //Away:id=30292694&op=a&odds=0.85&hdpType=1&isor=0&isLive=0&betpage=18&style=1
-                    //Over:id=30170989&op=h&odds=0.90&hdpType=1&isor=0&isLive=0&betpage=18&style=1
-                    //Under:id=30170989&op=a&odds=-1.00&hdpType=1&isor=0&isLive=0&betpage=18&style=1
-
-                    //Request
-                    ticket.MatchOddId = odd.OddId;
-                    ticket.HdpType = 1; //Live =2 , today=1
-                    ticket.Op = "h";                   
-                    ticket.Odds = odd.h; //Home , Over =h , Away, Under = a
-                    ticket.IsLive = 0;
-                    ticket.IsOr = 0;
-                    ticket.BetPage = 18;//check
-                    ticket.Style = 1;
-
-                    //sameticket=0&betcount=0&stake=10&ostyle=1&stakeInAuto=10&betpage=18&acceptIfAny=1&autoProcess=0&autoRefresh=0&oid=30292694&timeDiff=6735
-                    //Confirm
-                    ticket.SameTicket = 0;
-                    ticket.Betcount = 0;
-                    ticket.Stake = 10;
-                    ticket.StakeInAuto = 10;
-                    ticket.AcceptIfAny = 1;
-                    ticket.AutoProcess = 0;
-                    ticket.AutoRefresh = 0;  //check                                
-                    ticket.TimeDiff = 6735;
-
-                    var betresult = new Sbobet().Bet(acc, ticket);
-                }
-            }
         }
     }
 }

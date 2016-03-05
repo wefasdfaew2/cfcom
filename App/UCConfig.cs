@@ -304,6 +304,7 @@ namespace App
                         {
                             var odd = acc.CurrentMatch;
                             _flag = false;
+                            //_log.InfoFormat("bet:{0}", acc.UserName);
                             Task<Response<bool>> loginTask = Task.Run(() => new Sbobet().BetOverUnder(acc, odd));
                             var result = await loginTask;
                             acc.LastBetId = odd.MatchId.ToString() + odd.OddType.ToString() + odd.Goal.ToString();
@@ -315,8 +316,9 @@ namespace App
                         var acc = Program.Accounts.SingleOrDefault(x => x.Key == _account.Key);
                         if (acc != null && acc.Cookie.Count > 0 && !string.IsNullOrEmpty(acc.LoginName))
                         {
-                            var odd = acc.CurrentMatch;
+                            var odd = acc.CurrentMatch;                            
                             _flag = false;
+                            //_log.InfoFormat("bet:{0}", acc.UserName);
                             Task<Response<bool>> loginTask = Task.Run(() => new Sbobet().BetOverUnder(acc, odd));
                             var result = await loginTask;
                             if (result.Data && !result.HasError) lbl_BetSuccess.Invoke(new Action(() => lbl_BetSuccess.Text = ConvertUtils.ToMoneyText(acc.StakeVnd)));
