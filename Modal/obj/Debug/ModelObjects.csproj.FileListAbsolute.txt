@@ -1,0 +1,5 @@
+D:\A_PROJECT\BONG\Modal\bin\Debug\ModelObjects.dll
+D:\A_PROJECT\BONG\Modal\bin\Debug\ModelObjects.pdb
+D:\A_PROJECT\BONG\Modal\obj\Debug\ModelObjects.csprojResolveAssemblyReference.cache
+D:\A_PROJECT\BONG\Modal\obj\Debug\ModelObjects.dll
+D:\A_PROJECT\BONG\Modal\obj\Debug\ModelObjects.pdb

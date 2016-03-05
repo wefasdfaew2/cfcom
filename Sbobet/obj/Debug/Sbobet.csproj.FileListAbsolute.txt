@@ -1,0 +1,9 @@
+D:\A_PROJECT\BONG\Sbobet\bin\Debug\Sbobet.dll
+D:\A_PROJECT\BONG\Sbobet\bin\Debug\Sbobet.pdb
+D:\A_PROJECT\BONG\Sbobet\bin\Debug\ModelObjects.dll
+D:\A_PROJECT\BONG\Sbobet\bin\Debug\ServiceStack.Text.dll
+D:\A_PROJECT\BONG\Sbobet\bin\Debug\ModelObjects.pdb
+D:\A_PROJECT\BONG\Sbobet\bin\Debug\ServiceStack.Text.xml
+D:\A_PROJECT\BONG\Sbobet\obj\Debug\Sbobet.csprojResolveAssemblyReference.cache
+D:\A_PROJECT\BONG\Sbobet\obj\Debug\Sbobet.dll
+D:\A_PROJECT\BONG\Sbobet\obj\Debug\Sbobet.pdb

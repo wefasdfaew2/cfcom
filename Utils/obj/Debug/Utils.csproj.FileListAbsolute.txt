@@ -1,0 +1,10 @@
+D:\A_PROJECT\BONG\Utils\bin\Debug\Utils.dll
+D:\A_PROJECT\BONG\Utils\bin\Debug\Utils.pdb
+D:\A_PROJECT\BONG\Utils\bin\Debug\HtmlAgilityPack.dll
+D:\A_PROJECT\BONG\Utils\bin\Debug\Newtonsoft.Json.dll
+D:\A_PROJECT\BONG\Utils\bin\Debug\HtmlAgilityPack.pdb
+D:\A_PROJECT\BONG\Utils\bin\Debug\HtmlAgilityPack.xml
+D:\A_PROJECT\BONG\Utils\bin\Debug\Newtonsoft.Json.xml
+D:\A_PROJECT\BONG\Utils\obj\Debug\Utils.csprojResolveAssemblyReference.cache
+D:\A_PROJECT\BONG\Utils\obj\Debug\Utils.dll
+D:\A_PROJECT\BONG\Utils\obj\Debug\Utils.pdb
