@@ -5,12 +5,15 @@ using ModelObjects;
 using SbobetLib;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using Utils;
 
 namespace App
@@ -340,21 +343,6 @@ namespace App
     
             new Thread(new ThreadStart(CheckStatus)).Start();
 
-            //var accs = Program.Accounts.Where(x => x.Cookie.Count > 0 && x.LoginName != null);
-            //Parallel.ForEach(accs, (acc) =>
-            ////foreach (var acc in )
-            //{
-            //    var odd = acc.CurrentMatch; //.MatchOdds.SingleOrDefault(x => x.Match.MatchId == Program._betMatch.MatchId && x.OddType == Program._betMatch.OddType && x.Goal == Program._betMatch.Goal);
-            //    if (acc != null && odd != null)
-            //    {
-            //        _log.Info(acc.UserName);
-            //        //var resultBet = new Sbobet().BetOverUnder(acc, odd);
-            //        //if (resultBet.Data && !resultBet.HasError)
-            //        //{
-            //        //    MessageBox.Show("Bet success!");
-            //        //}
-            //    }
-            //});
         }
         private void btnStop_Click(object sender, EventArgs e)
         {
@@ -630,9 +618,67 @@ namespace App
             _log.Info(System.Diagnostics.Process.GetCurrentProcess().Threads.Count);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnImport_Click(object sender, EventArgs e)
         {
+            openFileDialog1.Filter = "Text File | *.txt";
+            DialogResult result = openFileDialog1.ShowDialog();
+            if (result == DialogResult.OK) 
+            {
+                string file = openFileDialog1.FileName;
 
+                if (!File.Exists(file))
+                {
+                    throw new FileNotFoundException();
+                }
+
+                var appSettings = Properties.Settings.Default;
+                try
+                {
+                    // Open settings file as XML
+                    var import = XDocument.Load(file);
+                    // Get the <setting> elements
+                    var settings = import.XPathSelectElements("//setting");
+                    foreach (var setting in settings)
+                    {
+                        string name = setting.Attribute("name").Value;
+                        string value = setting.XPathSelectElement("value").FirstNode.ToString();
+                        try
+                        {
+                            appSettings[name] = value; 
+                        }
+                        catch (SettingsPropertyNotFoundException ex)
+                        {
+                        }
+                    }
+
+                    LoadGetAccount();
+                    LoadBetAccount();
+                    LoadMatchSettings();
+
+                    Program.SaveConfig();
+                    Program.SaveBetConfig();
+                    Program.SaveMatchSettings();
+                }
+                catch (Exception exc)
+                {
+                    appSettings.Reload(); 
+                }                
+            }
+            
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.FileName = "CFCOMSettings.txt";
+            saveFileDialog1.Filter = "Text File | *.txt";
+            saveFileDialog1.ShowDialog();
+        }
+
+        private void saveFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            string name = saveFileDialog1.FileName;
+            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+            config.SaveAs(name); 
         }
 
     }
