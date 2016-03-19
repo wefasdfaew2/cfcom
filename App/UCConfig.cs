@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using App.Model;
@@ -13,6 +10,7 @@ using ModelObjects;
 using Utils;
 using SbobetLib;
 using log4net;
+using System.Diagnostics;
 
 namespace App
 {
@@ -25,12 +23,28 @@ namespace App
         private int _mY = 0;
 
         private static readonly ILog _log = LogManager.GetLogger(typeof(UCConfig));
-        Account _account;
-        bool _flag = true;    
+        public Account Acc { get; set; }
+        bool _flag = true;
+
         public UCConfig()
         {
             InitializeComponent();
             AllowDrag = true;
+        }
+
+        public UCConfig(Account account)
+        {
+            InitializeComponent();
+            AllowDrag = true;
+            this.Name = account.Key;
+            if (account.MatchOdds == null) account.MatchOdds = new List<MatchOdd>();
+            if (account.CurrentMatch == null) account.CurrentMatch = new MatchOdd();
+            Acc = account;
+            if (!Program.Accounts.Any(x => x.Key == account.Key))
+            {
+                Program.Accounts.Add(account);
+            }
+            ReFreshAccountView(account);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -67,24 +81,9 @@ namespace App
         {
             _isDragging = false;
             base.OnMouseUp(e);
-        }        
-
-        public UCConfig(Account account)
-        {
-            InitializeComponent();
-            AllowDrag = true;
-            this.Name = account.Key;
-            if (account.MatchOdds == null) account.MatchOdds = new List<MatchOdd>();
-            if (account.CurrentMatch == null) account.CurrentMatch = new MatchOdd();
-            _account = account;
-            if (!Program.Accounts.Any(x => x.Key == account.Key))
-            {
-                Program.Accounts.Add(account);
-            }
-            ReFreshAccountView(account);
         }
-
-        async void ReFreshAccountView(Account account)
+        
+        public void ReFreshAccountView(Account account)
         {
             lblAccount.LinkColor = account.Choose == 1 ? Color.Green : Color.Red;
             lblAccount.Text = account.UserName;
@@ -95,45 +94,45 @@ namespace App
             cbDigit.SelectedIndex = account.Choose == 1 ? account.UnderDigit : account.OverDigit;
         }
 
-        async void btnSave_Click(object sender, EventArgs e)
+        private void btnSave_Click(object sender, EventArgs e)
         {
-            Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Stake = int.Parse(txtStake.Text.Trim());
-            Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).StakeBalance = int.Parse(txtStake.Text.Trim());
-            Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Rate = double.Parse(txtRate.Text.Trim());
-            if (_account.Choose == 0)
+            Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Stake = int.Parse(txtStake.Text.Trim());
+            Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).StakeBalance = int.Parse(txtStake.Text.Trim());
+            Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Rate = double.Parse(txtRate.Text.Trim());
+            if (Acc.Choose == 0)
             {
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).OverOdd = double.Parse(txtOdd.Text.Trim());
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).OverDigit = cbDigit.SelectedIndex;
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).OverOdd = double.Parse(txtOdd.Text.Trim());
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).OverDigit = cbDigit.SelectedIndex;
             }
             else
             {
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).UnderOdd = double.Parse(txtOdd.Text.Trim());
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).UnderDigit = cbDigit.SelectedIndex;
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).UnderOdd = double.Parse(txtOdd.Text.Trim());
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).UnderDigit = cbDigit.SelectedIndex;
             }
 
             Program.SaveBetConfig();
-            _log.InfoFormat("Account Settings {0} saved successfully!", _account.UserName);
+            _log.InfoFormat("Acc Settings {0} saved successfully!", Acc.UserName);
         }
 
-        public async void ChangeBetType(ConfigAll config)
+        public void ChangeBetType(ConfigAll config)
         {
-            _account.Choose = config.Choose;
-            Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Choose = config.Choose;
-            if (_account.Choose == 0)
+            Acc.Choose = config.Choose;
+            Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Choose = config.Choose;
+            if (Acc.Choose == 0)
             {
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).OverOdd = double.Parse(txtOdd.Text.Trim());
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).OverDigit = cbDigit.SelectedIndex;
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).OverOdd = double.Parse(txtOdd.Text.Trim());
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).OverDigit = cbDigit.SelectedIndex;
             }
             else
             {
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).UnderOdd = double.Parse(txtOdd.Text.Trim());
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).UnderDigit = cbDigit.SelectedIndex;
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).UnderOdd = double.Parse(txtOdd.Text.Trim());
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).UnderDigit = cbDigit.SelectedIndex;
             }
 
-            ReFreshAccountView(Program.Accounts.SingleOrDefault(x => x.Key == _account.Key));
+            ReFreshAccountView(Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key));
         }
 
-        public async void SaveConfig(ConfigAll config)
+        public void SaveConfig(ConfigAll config)
         {
             txtStake.Text = config.Stake.ToString();
             txtRate.Text = config.Rate.ToString();
@@ -141,26 +140,27 @@ namespace App
             lblStakeVnd.Text = ConvertUtils.ToMoneyText(config.StakeVnd);
             cbDigit.SelectedIndex = config.Digit;
 
-            Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Stake = int.Parse(txtStake.Text.Trim());
-            Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Rate = int.Parse(txtRate.Text.Trim());
-            if (_account.Choose == 1)
+            Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Stake = int.Parse(txtStake.Text.Trim());
+            Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Rate = int.Parse(txtRate.Text.Trim());
+            if (Acc.Choose == 1)
             {
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).UnderOdd = double.Parse(txtOdd.Text.Trim());
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).UnderDigit = cbDigit.SelectedIndex;
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).UnderOdd = double.Parse(txtOdd.Text.Trim());
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).UnderDigit = cbDigit.SelectedIndex;
             }
             else
             {
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).OverOdd = double.Parse(txtOdd.Text.Trim());
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).OverDigit = cbDigit.SelectedIndex;                
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).OverOdd = double.Parse(txtOdd.Text.Trim());
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).OverDigit = cbDigit.SelectedIndex;
             }
         }
 
-        public async void SaveConfigStakeOnly(ConfigAll config)
+        public void SaveConfigStakeOnly(ConfigAll config)
         {
             txtStake.Text = config.Stake.ToString();
             lblStakeVnd.Text = ConvertUtils.ToMoneyText(config.StakeVnd);
-            Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Stake = int.Parse(txtStake.Text.Trim());
+            Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Stake = int.Parse(txtStake.Text.Trim());
         }
+
         private void btnLoginB_Click(object sender, EventArgs e)
         {
             Login();
@@ -169,17 +169,17 @@ namespace App
         {
             if (btnLoginB.Text == "Logout")
             {
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).LoginName = null;
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Cookie = new System.Net.CookieCollection();
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).LoginName = null;
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Cookie = new System.Net.CookieCollection();
                 btnLoginB.Text = "Login";
                 btnDelete.Enabled = true;
                 btnTrans.Enabled = false;
                 this.BackColor = SystemColors.Info;
-                _log.InfoFormat("Logout account {0} successfully!", _account.UserName);
+                _log.InfoFormat("Logout account {0} successfully!", Acc.UserName);
                 return;
             }
 
-            if (Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).UserName == "" || Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Password == "")
+            if (Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).UserName == "" || Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Password == "")
             {
                 MessageBox.Show("Please enter UserName & password!");
                 return;
@@ -187,11 +187,11 @@ namespace App
 
             btnLoginB.Enabled = false;
 
-            Task<Response<bool>> loginTask = Task.Run(() => new Sbobet().Login(Program.Accounts.SingleOrDefault(x => x.Key == _account.Key)));
+            Task<Response<bool>> loginTask = Task.Run(() => new Sbobet().Login(Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key)));
             var res = await loginTask;
             if (res.Data && !res.HasError)
             {
-                if (Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Cookie.Count > 3 && !String.IsNullOrEmpty(Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).LoginName))
+                if (Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Cookie.Count > 3 && !String.IsNullOrEmpty(Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).LoginName))
                 {
                     ((Button)((frmMain)this.FindForm()).Controls.Find("btnStart", true).FirstOrDefault()).Enabled = true;
                     ((Button)((frmMain)this.FindForm()).Controls.Find("btnStop", true).FirstOrDefault()).Enabled = true;
@@ -203,10 +203,14 @@ namespace App
                     new Thread(new ThreadStart(GetOdds)).Start();
                     new Thread(new ThreadStart(Bet)).Start();
 
-                    //var firstBets = new List<Task>();
-                    //var bet = Task.Run(async () => await Bet());
-                    //firstBets.Add(bet);
-                    //Task.s
+                    // get status filter
+                    var combobox = (this.FindForm() as frmMain).Controls.Find("cbMatchStyle", true).FirstOrDefault() as ComboBox;
+                    if (combobox != null)
+                    {
+                        MatchStatus status = GetMatchStatus(combobox.SelectedIndex);
+                        var thread = new Thread(new ParameterizedThreadStart(OnBetStolen));
+                        thread.Start(status);
+                    }
                 }
             }
             else
@@ -215,21 +219,35 @@ namespace App
                 this.BackColor = SystemColors.Info;
             }
         }
+
+        private MatchStatus GetMatchStatus(int index)
+        {
+            if (index == 0)
+            {
+                return MatchStatus.Today;
+            }
+            else if (index == 1)
+            {
+                return MatchStatus.Running;
+            }
+            else return MatchStatus.Early;
+        }
+
         public async void LoginFromMain(string txt)
         {
             if (txt == "Logout")
             {
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).LoginName = null;
-                Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Cookie = new System.Net.CookieCollection();
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).LoginName = null;
+                Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Cookie = new System.Net.CookieCollection();
                 btnLoginB.Text = "Login";
                 btnDelete.Enabled = true;
                 btnTrans.Enabled = false;
                 this.BackColor = SystemColors.Info;
-                _log.InfoFormat("Logout account {0} successfully!", _account.UserName);
+                _log.InfoFormat("Logout account {0} successfully!", Acc.UserName);
                 return;
             }
 
-            if (Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).UserName == "" || Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Password == "")
+            if (Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).UserName == "" || Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Password == "")
             {
                 MessageBox.Show("Please enter UserName & password!");
                 return;
@@ -237,11 +255,11 @@ namespace App
 
             btnLoginB.Enabled = false;
 
-            Task<Response<bool>> loginTask = Task.Run(() => new Sbobet().Login(Program.Accounts.SingleOrDefault(x => x.Key == _account.Key)));
+            Task<Response<bool>> loginTask = Task.Run(() => new Sbobet().Login(Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key)));
             var res = await loginTask;
             if (res.Data && !res.HasError)
             {
-                if (Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).Cookie.Count > 3 && !String.IsNullOrEmpty(Program.Accounts.SingleOrDefault(x => x.Key == _account.Key).LoginName))
+                if (Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).Cookie.Count > 3 && !String.IsNullOrEmpty(Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key).LoginName))
                 {
                     ((Button)((frmMain)this.FindForm()).Controls.Find("btnStart", true).FirstOrDefault()).Enabled = true;
                     ((Button)((frmMain)this.FindForm()).Controls.Find("btnStop", true).FirstOrDefault()).Enabled = true;
@@ -268,21 +286,21 @@ namespace App
         }
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            var acc = Program.Accounts.SingleOrDefault(x => x.Key == _account.Key);
+            var acc = Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key);
             if (acc != null) Program.Accounts.Remove(acc);
             this.Parent.Controls.Remove(this);
             Program.SaveBetConfig();
         }
         private void btnTrans_Click(object sender, EventArgs e)
         {
-            WSubTran f = new WSubTran(string.Format("{0}/web-root/restricted/betlist/running-bet-list.aspx?popout=1", _account.BaseUrl), _account.Cookie);
+            WSubTran f = new WSubTran(string.Format("{0}/web-root/restricted/betlist/running-bet-list.aspx?popout=1", Acc.BaseUrl), Acc.Cookie);
             f.ShowDialog();
         }
         private void lblAccount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var _frmConfig = new frmAccConfig(_account);
+            var _frmConfig = new frmAccConfig(Acc);
             _frmConfig.ShowDialog();
-            ReFreshAccountView(Program.Accounts.SingleOrDefault(x => x.Key == _account.Key));
+            ReFreshAccountView(Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key));
         }
         private void txtStake_TextChanged(object sender, EventArgs e)
         {
@@ -294,39 +312,55 @@ namespace App
         private async void Bet()
         {
             try
-            {                            
-                while (1 == 1)
+            {
+                while (true)
                 {
-                    if (Program.___flag==1 && _account.AccountType==0 && _flag)
+                    if (_flag == false)
                     {
-                        var acc = Program.Accounts.SingleOrDefault(x => x.Key == _account.Key);
-                        if ( acc!= null && acc.Cookie.Count>0 && !string.IsNullOrEmpty(acc.LoginName))
+                        await Task.Delay(10);
+                        continue;
+                    }   
+
+                    // go far here when get odd success
+
+                    if (Program._isStartRunning == 1 && Acc.AccountType == 0)
+                    {
+                        // bet account
+                        Log("starting bet: account type = {0}, flag = {1}", Acc.AccountType, Program._isStartRunning);
+
+                        var acc = Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key);
+                        if (acc != null && acc.Cookie.Count > 0 && !string.IsNullOrEmpty(acc.LoginName))
                         {
                             var odd = acc.CurrentMatch;
                             _flag = false;
-                            //_log.InfoFormat("bet:{0}", acc.UserName);
+
                             Task<Response<bool>> loginTask = Task.Run(() => new Sbobet().BetOverUnder(acc, odd));
                             var result = await loginTask;
                             acc.LastBetId = odd.MatchId.ToString() + odd.OddType.ToString() + odd.Goal.ToString();
                             if (result.Data && !result.HasError) lbl_BetSuccess.Invoke(new Action(() => lbl_BetSuccess.Text = ConvertUtils.ToMoneyText(acc.StakeVnd)));
                         }
                     }
-                    else if (Program.___flag == 2 && (_account.AccountType == 1 || _account.AccountType == 3) && _flag)
+                    else if (Program._isStartRunning == 2 && (Acc.AccountType == 1 || Acc.AccountType == 3))
                     {
-                        var acc = Program.Accounts.SingleOrDefault(x => x.Key == _account.Key);
+                        // odd account
+                        Log("starting odd: account type = {0}, flag = {1}", Acc.AccountType, Program._isStartRunning);
+
+                        var acc = Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key);
                         if (acc != null && acc.Cookie.Count > 0 && !string.IsNullOrEmpty(acc.LoginName))
                         {
-                            var odd = acc.CurrentMatch;                            
+                            var odd = acc.CurrentMatch;
                             _flag = false;
-                            //_log.InfoFormat("bet:{0}", acc.UserName);
+
                             Task<Response<bool>> loginTask = Task.Run(() => new Sbobet().BetOverUnder(acc, odd));
                             var result = await loginTask;
                             if (result.Data && !result.HasError) lbl_BetSuccess.Invoke(new Action(() => lbl_BetSuccess.Text = ConvertUtils.ToMoneyText(acc.StakeVnd)));
                         }
                     }
-                    else if (Program.___flag == 3 && (_account.AccountType == 2) && _flag)
+                    else if (Program._isStartRunning == 3 && (Acc.AccountType == 2))
                     {
-                        var acc = Program.Accounts.SingleOrDefault(x => x.Key == _account.Key);
+                        Log("starting ..., account type = {0}, flag = {1}", Acc.AccountType, Program._isStartRunning);
+
+                        var acc = Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key);
                         if (acc != null && acc.Cookie.Count > 0 && !string.IsNullOrEmpty(acc.LoginName))
                         {
                             var odd = acc.CurrentMatch;
@@ -336,45 +370,116 @@ namespace App
                             if (result.Data && !result.HasError) lbl_BetSuccess.Invoke(new Action(() => lbl_BetSuccess.Text = ConvertUtils.ToMoneyText(acc.StakeVnd)));
                         }
                     }
+
                     await Task.Delay(10);
                 }
             }
             catch (Exception ex)
             {
+                Log("bet error: {0}", ex.Message);
             }
         }
+
         private async void GetOdds()
-        { 
+        {
             try
             {
-                var acc = Program.Accounts.SingleOrDefault(x => x.Key == _account.Key);
-                while (1==1)
+                var acc = Program.Accounts.SingleOrDefault(x => x.Key == Acc.Key);
+                while (true)
                 {
-                    if (Program.___flag==0)
+                    // not click run button yet
+                    if (Program._isStartRunning != 0)
                     {
-                        if (acc != null && acc.Cookie.Count > 3 && !String.IsNullOrEmpty(acc.LoginName))
+                        await Task.Delay(2000);
+                        continue;
+                    }
+
+                    // login success and have cookies in account
+                    if (acc != null && acc.Cookie.Count > 3 && !String.IsNullOrEmpty(acc.LoginName))
+                    {
+                        if (acc.CurrentMatch.MatchId != Program._currentMatch.MatchId || acc.CurrentMatch.OddType != Program._currentMatch.OddType || acc.CurrentMatch.Goal != Program._currentMatch.Goal)
                         {
-                            if (acc.CurrentMatch.MatchId != Program._currentMatch.MatchId || acc.CurrentMatch.OddType != Program._currentMatch.OddType || acc.CurrentMatch.Goal != Program._currentMatch.Goal)
+                            // get odd from service
+                            var result = new Sbobet().GetOdds(acc, Program.MatchFilter.MatchStyle);
+                            if (!result.HasError && result.Data != null)
                             {
-                                var result = new Sbobet().GetOdds(acc, Program.MatchFilter.MatchStyle);
-                                if (!result.HasError && result.Data != null)
-                                {
-                                    acc.MatchOdds = result.Data.Where(x => x.OddType == (int)Program.MatchFilter.OddStyle).ToList();
-                                    var odd = acc.MatchOdds.SingleOrDefault(x => x.Match.MatchId == Program._betMatch.MatchId && x.OddType == Program._betMatch.OddType && x.Goal == Program._betMatch.Goal);
-                                    acc.CurrentMatch = odd;
-                                    lblBetCredit.Invoke(new Action(() => lblBetCredit.Text = odd.OddId.ToString()));
-                                    _flag = true;
-                                }
+                                acc.MatchOdds = result.Data.Where(x => x.OddType == (int)Program.MatchFilter.OddStyle).ToList();
+                                var odd = acc.MatchOdds.SingleOrDefault(x => x.Match.MatchId == Program._betMatch.MatchId && x.OddType == Program._betMatch.OddType && x.Goal == Program._betMatch.Goal);
+                                acc.CurrentMatch = odd;
+                                lblBetCredit.Invoke(new Action(() => lblBetCredit.Text = odd.OddId.ToString()));
+                                _flag = true; // matched condition, start bet
                             }
                         }
                     }
-                    await Task.Delay(2000);
+                    // await Task.Delay(2000);
                 }
             }
             catch (Exception ex)
             {
+                Log("get odds error: {0}", ex.Message);
             }
         }
+        
+
         #endregion
+
+        private double _previousO1 = 0;
+        private double _previousU1 = 0;
+
+        /// <summary>
+        /// stolen bet
+        /// </summary>
+        /// <param name="obj">obj is MatchStatus</param>
+        public async void OnBetStolen(object obj)
+        {
+            MatchStatus matchStatus = (MatchStatus)obj;
+            
+            try
+            {
+                while (true)
+                {
+                    // get odds account
+                    var service = new Sbobet();
+                    var resp = service.GetOdds(this.Acc, matchStatus);
+
+                    if (resp != null && resp.Data != null && resp.Data.Count > 0)
+                    {
+                        var matches = resp.Data;
+
+                        Log("bet stolen found: {0} matches", matches.Count);
+
+
+                    }
+
+                    // delay for next run
+                    await Task.Delay(100);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Bet stolen error: {0}", ex.Message);
+            }
+        }
+
+
+        private void Log(string format, params object[] args)
+        {
+            var msg = "----------------------------------------";
+            if (string.IsNullOrEmpty(format) == false && string.IsNullOrWhiteSpace(format) == false)
+            {
+                try
+                {
+                    format = format.Replace("{", "[{").Replace("}", "}]");
+                    msg = string.Format(format, args);
+                }
+                catch (Exception)
+                {
+                    msg = string.Format("Invalid format {0} parameter: {1}", args.Length, format);
+                }
+            }
+
+            Debug.WriteLine(msg);
+            _log.Info(msg);
+        }
     }
 }

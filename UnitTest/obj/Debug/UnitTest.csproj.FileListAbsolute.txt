@@ -1,0 +1,13 @@
+D:\projects\cfcom\UnitTest\bin\Debug\UnitTest.dll
+D:\projects\cfcom\UnitTest\bin\Debug\UnitTest.pdb
+D:\projects\cfcom\UnitTest\bin\Debug\ModelObjects.dll
+D:\projects\cfcom\UnitTest\bin\Debug\SbobetLib.dll
+D:\projects\cfcom\UnitTest\bin\Debug\log4net.dll
+D:\projects\cfcom\UnitTest\bin\Debug\ServiceStack.Text.dll
+D:\projects\cfcom\UnitTest\bin\Debug\ModelObjects.pdb
+D:\projects\cfcom\UnitTest\bin\Debug\SbobetLib.pdb
+D:\projects\cfcom\UnitTest\bin\Debug\log4net.xml
+D:\projects\cfcom\UnitTest\bin\Debug\ServiceStack.Text.xml
+D:\projects\cfcom\UnitTest\obj\Debug\UnitTest.csprojResolveAssemblyReference.cache
+D:\projects\cfcom\UnitTest\obj\Debug\UnitTest.dll
+D:\projects\cfcom\UnitTest\obj\Debug\UnitTest.pdb

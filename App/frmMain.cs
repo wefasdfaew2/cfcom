@@ -6,6 +6,7 @@ using SbobetLib;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace App
             this.flpOdd.DragEnter += new DragEventHandler(flpBet_DragEnter);
             this.flpOdd.DragDrop += new DragEventHandler(flpBet_DragDrop);
 
-            InitTable();            
+            InitTable();
         }
 
         void flpBet_DragDrop(object sender, DragEventArgs e)
@@ -64,7 +65,7 @@ namespace App
             {
                 // Just add the control to the new panel.
                 // No need to remove from the other panel, this changes the Control.Parent property.
-                
+
                 Point p = _destination.PointToClient(new Point(e.X, e.Y));
                 var item = _destination.GetChildAtPoint(p);
                 int i = 1;
@@ -93,7 +94,7 @@ namespace App
             foreach (var item in flp.Controls)
             {
                 var x = (UCConfig)item;
-                var acc = Program.Accounts.SingleOrDefault(u=>u.Key==x.Name);
+                var acc = Program.Accounts.SingleOrDefault(u => u.Key == x.Name);
                 acc.Pos = i;
                 i++;
             }
@@ -129,7 +130,7 @@ namespace App
         }
         void InitTable()
         {
-            Program._dtMatch.Columns.Add("MatchId", typeof(int));            
+            Program._dtMatch.Columns.Add("MatchId", typeof(int));
             Program._dtMatch.Columns.Add("Contest", typeof(String));
             Program._dtMatch.Columns.Add("Home", typeof(String));
             Program._dtMatch.Columns.Add("Away", typeof(String));
@@ -140,7 +141,7 @@ namespace App
 
             grvMatch.DataSource = Program._dtMatch;
 
-            addCol("Id", 60, 0, null);            
+            addCol("Id", 60, 0, null);
             addCol("Contest", 200, 1, null);
             addCol("Home", 100, 2, null);
             addCol("Away", 100, 3, null);
@@ -206,7 +207,7 @@ namespace App
             Program.LoadMatchSettings();
             cbMatchStyle.SelectedIndex = (int)Program.MatchFilter.MatchStyle;
             int odstyle = (int)Program.MatchFilter.OddStyle;
-            cbOddStyle.SelectedIndex = odstyle == 3 ? 0 : odstyle == 9 ? 1 : odstyle==1?2:3;
+            cbOddStyle.SelectedIndex = odstyle == 3 ? 0 : odstyle == 9 ? 1 : odstyle == 1 ? 2 : 3;
         }
         public async void ViewMatchInfo(Account acc)
         {
@@ -224,13 +225,13 @@ namespace App
                         foreach (var item in Program._matchs)
                         {
                             addTable(item);
-                        }                        
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                lblMess.Invoke(new Action(() => lblMess.Text = "Get Account Infomation Failed: " + ex.Message));
+                lblMess.Invoke(new Action(() => lblMess.Text = "Get Acc Infomation Failed: " + ex.Message));
             }
         }
 
@@ -238,7 +239,7 @@ namespace App
         {
             var acc = Program.AccountGets.Where(x => x.Cookie.Count > 0 && x.UserName != null).FirstOrDefault();
             Program.MatchFilter.MatchStyle = cbMatchStyle.SelectedIndex == 0 ? MatchStatus.Today : cbMatchStyle.SelectedIndex == 1 ? MatchStatus.Running : MatchStatus.Early;
-            Program.MatchFilter.OddStyle = cbOddStyle.SelectedIndex == 0 ? OddsStatus.OU : cbMatchStyle.SelectedIndex == 1 ? OddsStatus.OUH1 :cbMatchStyle.SelectedIndex == 2 ? OddsStatus.FT: OddsStatus.H1;
+            Program.MatchFilter.OddStyle = cbOddStyle.SelectedIndex == 0 ? OddsStatus.OU : cbMatchStyle.SelectedIndex == 1 ? OddsStatus.OUH1 : cbMatchStyle.SelectedIndex == 2 ? OddsStatus.FT : OddsStatus.H1;
             ViewMatchInfo(acc);
         }
 
@@ -246,7 +247,7 @@ namespace App
         {
             if (e.RowIndex > -1 && e.ColumnIndex > -1)
             {
-                if (Program.___flag == 0 || (Program.___flag > 0 && MessageBox.Show("Chọn trận khác, chắc chắn trận đã xong trân đang chay?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes))
+                if (Program._isStartRunning == 0 || (Program._isStartRunning > 0 && MessageBox.Show("Chọn trận khác, chắc chắn trận đã xong trân đang chay?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes))
                 {
                     int matchId = int.Parse(grvMatch.Rows[e.RowIndex].Cells[0].Value.ToString());
                     int oddType = grvMatch.Rows[e.RowIndex].Cells[4].Value.ToString() == "H1" ? 9 : 3;
@@ -259,14 +260,14 @@ namespace App
                         var odd = acc.MatchOdds.SingleOrDefault(x => x.MatchId == Program._betMatch.MatchId && x.OddType == Program._betMatch.OddType && x.Goal == Program._betMatch.Goal);
                         if (odd != null)
                         {
-                            Program.___flag = 0;
+                            Program._isStartRunning = 0;
                             Program._currentMatch = odd;
                             btnStart.Enabled = true;
                             btnStop.Enabled = false;
                             Program._lastBetId = odd.MatchId.ToString() + odd.OddType.ToString() + odd.Goal.ToString();
                             lblMatchSelect.Text = string.Format("{0} - {1}: {2} vs {3} ( {4} - {5} )", matchId, odd.Match.Contest, odd.Match.Home, odd.Match.Away, odd.OddTypeDisplay, odd.Goal);
                             lblOverOdd.Text = Program._betMatch.OddType == 3 ? odd.o.ToString() : odd.o1.ToString();
-                            lblUnderOdd.Text = Program._betMatch.OddType == 3 ? odd.u.ToString() : odd.u1.ToString();                            
+                            lblUnderOdd.Text = Program._betMatch.OddType == 3 ? odd.u.ToString() : odd.u1.ToString();
                         }
                     }
                 }
@@ -334,19 +335,24 @@ namespace App
             flpOdd.Controls.Add(new UCConfig(account));
         }
 
-        private async void btnRun_Click(object sender, EventArgs e)
-        {            
-            Program.___flag = 1;
+        /// <summary>
+        /// should not use `async` keyword if there are not `await` in code
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnRun_Click(object sender, EventArgs e)
+        {
+            Program._isStartRunning = 1;
             _log.Info("Start Betting ..");
             btnStart.Enabled = false;
             btnStop.Enabled = true;
-    
+
             new Thread(new ThreadStart(CheckStatus)).Start();
 
         }
         private void btnStop_Click(object sender, EventArgs e)
         {
-            Program.___flag = 0;
+            Program._isStartRunning = 0;
             btnStart.Enabled = true;
             btnStop.Enabled = false;
             _log.Info("Stop Betting ..");
@@ -392,20 +398,21 @@ namespace App
                     //Sl da bet trong crmatch
                     var b = Program.Accounts.Count(x => x.AccountType == 0);
                     var c = Program.Accounts.Count(x => x.LastBetId == Program._lastBetId && x.AccountType == 0);
-                   // _log.InfoFormat("count {0} - {1}", b, c);
-                    if (c>=b-1 && Program.___flag==1)
+                    
+                    if ((c >= b - 1) && Program._isStartRunning == 1)
                     {
                         _log.Info("Start Odd!");
-                        Program.___flag = 2;
-                    }
+                        Program._isStartRunning = 2;
+                    }                  
+
                     await Task.Delay(100);
-                }                
+                }
             }
             catch (Exception ex)
             {
-
+                Log("check status error: {0}", ex.Message);
             }
-        }
+        }        
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -444,7 +451,7 @@ namespace App
                 OverOdd = 0,
                 UnderOdd = 0,
                 Choose = 0,
-                AccountType=2,
+                AccountType = 2,
                 OverDigit = 0,
                 UnderDigit = 0,
                 Wait = 0,
@@ -608,7 +615,7 @@ namespace App
 
         private void btnBetAllBuy_Click(object sender, EventArgs e)
         {
-            Program.___flag = 3;
+            Program._isStartRunning = 3;
         }
 
         SemaphoreSlim _mutex = new SemaphoreSlim(10);
@@ -622,7 +629,7 @@ namespace App
         {
             openFileDialog1.Filter = "Text File | *.txt";
             DialogResult result = openFileDialog1.ShowDialog();
-            if (result == DialogResult.OK) 
+            if (result == DialogResult.OK)
             {
                 string file = openFileDialog1.FileName;
 
@@ -644,7 +651,7 @@ namespace App
                         string value = setting.XPathSelectElement("value").FirstNode.ToString();
                         try
                         {
-                            appSettings[name] = value; 
+                            appSettings[name] = value;
                         }
                         catch (SettingsPropertyNotFoundException ex)
                         {
@@ -661,10 +668,10 @@ namespace App
                 }
                 catch (Exception exc)
                 {
-                    appSettings.Reload(); 
-                }                
+                    appSettings.Reload();
+                }
             }
-            
+
         }
 
         private void btnExport_Click(object sender, EventArgs e)
@@ -678,8 +685,30 @@ namespace App
         {
             string name = saveFileDialog1.FileName;
             var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-            config.SaveAs(name); 
+            config.SaveAs(name);
         }
+
+        #region helpers
+        private void Log(string format, params object[] args)
+        {
+            var msg = "----------------------------------------";
+            if (string.IsNullOrEmpty(format) == false && string.IsNullOrWhiteSpace(format) == false)
+            {
+                try
+                {
+                    format = format.Replace("{", "[{").Replace("}", "}]");
+                    msg = string.Format(format, args);
+                }
+                catch (Exception)
+                {
+                    msg = string.Format("Invalid format {0} parameter: {1}", args.Length, format);
+                }
+            }
+
+            Debug.WriteLine(msg);
+            _log.Info(msg);
+        }
+        #endregion
 
     }
 }

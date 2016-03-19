@@ -27,6 +27,7 @@ namespace ModelObjects
             get { return this.Rate * this.Stake; }
             set { }
         }
+       
         public double StakeBalance { get; set; }
         public double StakeVndBalance
         {

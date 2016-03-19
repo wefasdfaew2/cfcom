@@ -9,3 +9,14 @@ D:\A_PROJECT\BONG\Sbobet\bin\Debug\ServiceStack.Text.xml
 D:\A_PROJECT\BONG\Sbobet\obj\Debug\SbobetLib.csprojResolveAssemblyReference.cache
 D:\A_PROJECT\BONG\Sbobet\obj\Debug\SbobetLib.dll
 D:\A_PROJECT\BONG\Sbobet\obj\Debug\SbobetLib.pdb
+D:\projects\cfcom\Sbobet\bin\Debug\SbobetLib.dll
+D:\projects\cfcom\Sbobet\bin\Debug\SbobetLib.pdb
+D:\projects\cfcom\Sbobet\bin\Debug\log4net.dll
+D:\projects\cfcom\Sbobet\bin\Debug\ModelObjects.dll
+D:\projects\cfcom\Sbobet\bin\Debug\ServiceStack.Text.dll
+D:\projects\cfcom\Sbobet\bin\Debug\ModelObjects.pdb
+D:\projects\cfcom\Sbobet\bin\Debug\log4net.xml
+D:\projects\cfcom\Sbobet\bin\Debug\ServiceStack.Text.xml
+D:\projects\cfcom\Sbobet\obj\Debug\SbobetLib.csprojResolveAssemblyReference.cache
+D:\projects\cfcom\Sbobet\obj\Debug\SbobetLib.dll
+D:\projects\cfcom\Sbobet\obj\Debug\SbobetLib.pdb

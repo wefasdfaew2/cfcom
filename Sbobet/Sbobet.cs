@@ -1,13 +1,10 @@
 ﻿using ModelObjects;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using ServiceStack.Text;
 using System.Web;
-using System.IO;
 using App.Model;
 using log4net;
 
@@ -127,7 +124,7 @@ namespace SbobetLib
                 account.HomeUrl = url;
                 account.BaseUrl = baseUrl;
                 account.LoginName = url.Substring(url.IndexOf("loginname=") + 10, url.IndexOf("&") - url.IndexOf("loginname=") - 10);
-
+                
                 surl = url.GetJsonFromUrl(
                     requestFilter: getRequest =>
                     {
@@ -191,7 +188,7 @@ namespace SbobetLib
                             "1,1,2,1,1,2,2,2,0",
                             0);
                 }
-
+                
                 var str = url.GetStringFromUrl(
                         requestFilter: getRequest =>
                         {

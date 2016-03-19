@@ -8,3 +8,13 @@ D:\A_PROJECT\BONG\Utils\bin\Debug\Newtonsoft.Json.xml
 D:\A_PROJECT\BONG\Utils\obj\Debug\Utils.csprojResolveAssemblyReference.cache
 D:\A_PROJECT\BONG\Utils\obj\Debug\Utils.dll
 D:\A_PROJECT\BONG\Utils\obj\Debug\Utils.pdb
+D:\projects\cfcom\Utils\bin\Debug\Utils.dll
+D:\projects\cfcom\Utils\bin\Debug\Utils.pdb
+D:\projects\cfcom\Utils\bin\Debug\HtmlAgilityPack.dll
+D:\projects\cfcom\Utils\bin\Debug\Newtonsoft.Json.dll
+D:\projects\cfcom\Utils\bin\Debug\HtmlAgilityPack.pdb
+D:\projects\cfcom\Utils\bin\Debug\HtmlAgilityPack.xml
+D:\projects\cfcom\Utils\bin\Debug\Newtonsoft.Json.xml
+D:\projects\cfcom\Utils\obj\Debug\Utils.csprojResolveAssemblyReference.cache
+D:\projects\cfcom\Utils\obj\Debug\Utils.dll
+D:\projects\cfcom\Utils\obj\Debug\Utils.pdb

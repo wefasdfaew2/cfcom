@@ -3,3 +3,8 @@ D:\A_PROJECT\BONG\Modal\bin\Debug\ModelObjects.pdb
 D:\A_PROJECT\BONG\Modal\obj\Debug\ModelObjects.csprojResolveAssemblyReference.cache
 D:\A_PROJECT\BONG\Modal\obj\Debug\ModelObjects.dll
 D:\A_PROJECT\BONG\Modal\obj\Debug\ModelObjects.pdb
+D:\projects\cfcom\Modal\bin\Debug\ModelObjects.dll
+D:\projects\cfcom\Modal\bin\Debug\ModelObjects.pdb
+D:\projects\cfcom\Modal\obj\Debug\ModelObjects.csprojResolveAssemblyReference.cache
+D:\projects\cfcom\Modal\obj\Debug\ModelObjects.dll
+D:\projects\cfcom\Modal\obj\Debug\ModelObjects.pdb

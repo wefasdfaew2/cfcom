@@ -27,14 +27,14 @@ namespace App.Model
         public string OddTypeDisplay { get; set; }
         public double Goal { get; set; }
         public int OddType { get; set; }
-        public double h { get; set; }
+        public double h { get; set; } // home
         public double a { get; set; }
-        public double o { get; set; }
-        public double u { get; set; }
+        public double o { get; set; } // over
+        public double u { get; set; } // under
         public double h1 { get; set; }
         public double a1 { get; set; }
-        public double o1 { get; set; }
-        public double u1 { get; set; }
+        public double o1 { get; set; } // first match over
+        public double u1 { get; set; } // first match under
         public int MatchId { get; set; }
         public virtual Match Match { get; set; }
     }

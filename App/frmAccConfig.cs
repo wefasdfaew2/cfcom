@@ -47,7 +47,7 @@ namespace App
         {
             if (Program.Accounts.Any(x => x.UserName == txtUsnB.Text.Trim() && x.UserName != _acccount.UserName))
             {
-                MessageBox.Show("Account already exits!");
+                MessageBox.Show("Acc already exits!");
                 return;
             }
             Program.Accounts.SingleOrDefault(x => x.Key == _acccount.Key).HostUrl = cbHostUrl.SelectedItem.ToString();

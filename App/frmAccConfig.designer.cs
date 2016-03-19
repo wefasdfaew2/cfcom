@@ -77,7 +77,7 @@
             this.gbUc.Size = new System.Drawing.Size(365, 230);
             this.gbUc.TabIndex = 77;
             this.gbUc.TabStop = false;
-            this.gbUc.Text = "Bet Account";
+            this.gbUc.Text = "Bet Acc";
             // 
             // cbHostUrl
             // 
@@ -347,7 +347,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmAccConfig";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Bet Account Config";
+            this.Text = "Bet Acc Config";
             this.gbUc.ResumeLayout(false);
             this.gbUc.PerformLayout();
             this.groupBox2.ResumeLayout(false);

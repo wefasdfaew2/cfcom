@@ -1,0 +1,9 @@
+D:\projects\cfcom\AppTest\bin\Debug\AppTest.exe.config
+D:\projects\cfcom\AppTest\bin\Debug\AppTest.exe
+D:\projects\cfcom\AppTest\bin\Debug\AppTest.pdb
+D:\projects\cfcom\AppTest\obj\Debug\AppTest.csprojResolveAssemblyReference.cache
+D:\projects\cfcom\AppTest\obj\Debug\AppTest.Form1.resources
+D:\projects\cfcom\AppTest\obj\Debug\AppTest.Properties.Resources.resources
+D:\projects\cfcom\AppTest\obj\Debug\AppTest.csproj.GenerateResource.Cache
+D:\projects\cfcom\AppTest\obj\Debug\AppTest.exe
+D:\projects\cfcom\AppTest\obj\Debug\AppTest.pdb

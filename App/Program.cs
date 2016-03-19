@@ -29,7 +29,7 @@ namespace App
         public static MatchOdd _currentMatch = new MatchOdd();
         public static List<BetResult> BetResults = new List<BetResult>();
         public static string  _lastBetId = "";
-        public static int ___flag = 0;
+        public static int _isStartRunning = 0;
         #endregion
 
         [STAThread]

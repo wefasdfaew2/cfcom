@@ -124,7 +124,7 @@
             this.lblAccount.Size = new System.Drawing.Size(47, 13);
             this.lblAccount.TabIndex = 117;
             this.lblAccount.TabStop = true;
-            this.lblAccount.Text = "Account";
+            this.lblAccount.Text = "Acc";
             this.lblAccount.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblAccount_LinkClicked);
             // 
             // btnLoginB
